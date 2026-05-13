@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  image: sbondco/watcharr
+  image: agiuszac/watcharr
 
 jobs:
   release-dev-image:
