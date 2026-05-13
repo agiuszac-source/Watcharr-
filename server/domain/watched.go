@@ -44,6 +44,8 @@ type WatchedGetPageRequest struct {
 	// Filtering options.
 	FilterType   []util.SupportedMedia  `form:"type" collection_format:"csv"`
 	FilterStatus []entity.WatchedStatus `form:"status" collection_format:"csv"`
+	// Minimum rating filter (0-10).
+	FilterRating float64 `form:"rating"`
 }
 
 type WatchedGetPageExtraProps struct {

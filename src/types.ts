@@ -559,6 +559,7 @@ export interface ImportedList {
 export interface Filters {
 	type: string[];
 	status: string[];
+	rating?: number[];
 }
 
 export interface ManagedUser {

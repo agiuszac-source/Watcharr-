@@ -49,6 +49,15 @@ func refineFilterStatus(db *gorm.DB, f []entity.WatchedStatus) {
 	db.Where("watcheds.status IN ?", f)
 }
 
+// Applies 'Rating' filter (minimum rating).
+func refineFilterRating(db *gorm.DB, rating float64) {
+	if rating <= 0 {
+		return
+	}
+	slog.Debug("watchedRefine: Filter rating.", "rating", rating)
+	db.Where("watcheds.rating >= ?", rating)
+}
+
 // Applies sorts to list.
 func refineSort(db *gorm.DB, sort domain.WatchedSort, dir domain.SortDirection) {
 	if sort == "" {
@@ -115,6 +124,7 @@ func watchedRefine(wr domain.WatchedGetPageRequest) func(db *gorm.DB) *gorm.DB {
 		// Apply filters
 		refineFilterType(db, wr.FilterType)
 		refineFilterStatus(db, wr.FilterStatus)
+		refineFilterRating(db, wr.FilterRating)
 		// Apply sort
 		refineSortPinned(db)
 		refineSort(db, wr.Sort, wr.SortDir)

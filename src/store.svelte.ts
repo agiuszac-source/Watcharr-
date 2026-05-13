@@ -51,7 +51,7 @@ interface Store {
 const _store: Store = $state({
 	notifications: [],
 	activeSort: defaultSort,
-	activeFilters: { type: [], status: [] },
+	activeFilters: { type: [], status: [], rating: [] },
 	appTheme: "system",
 	sortAndFiltersForQueryParams: {},
 	importedList: undefined,
@@ -80,6 +80,10 @@ const updateSortAndFiltersForQueryParams = () => {
 			const s = store.activeFilters?.status?.join(",");
 			if (s) {
 				qp["status"] = s;
+			}
+			const r = store.activeFilters?.rating?.[0];
+			if (r !== undefined && r > 0) {
+				qp["rating"] = r;
 			}
 		}
 		_store.sortAndFiltersForQueryParams = qp;
@@ -119,7 +123,8 @@ export const store = {
 		return (
 			this.activeFilters &&
 			(this.activeFilters.status?.length > 0 ||
-				this.activeFilters.type?.length > 0)
+				this.activeFilters.type?.length > 0 ||
+				(this.activeFilters.rating?.length ?? 0) > 0)
 		);
 	},
 	set activeFilters(v) {

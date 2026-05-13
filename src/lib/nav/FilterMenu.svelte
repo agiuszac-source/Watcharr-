@@ -93,6 +93,22 @@
 	>
 		dropped
 	</button>
+	<h4 class="norm sm-caps">My List</h4>
+	<label>
+		<span class="norm sm-caps">Rating</span>
+		<input
+			type="range"
+			min="0"
+			max="10"
+			step="1"
+			value={store.activeFilters.rating?.[0] ?? 0}
+			onchange={(e) => {
+				store.activeFilters.rating = [parseFloat(e.target.value)];
+				store.activeFilters = store.activeFilters;
+			}}
+		/>
+		<span>{store.activeFilters.rating?.[0] ?? 0}</span>
+	</label>
 </Menu>
 
 <style lang="scss">
