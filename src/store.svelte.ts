@@ -81,9 +81,18 @@ const updateSortAndFiltersForQueryParams = () => {
 			if (s) {
 				qp["status"] = s;
 			}
-			const r = store.activeFilters?.rating?.[0];
-			if (r !== undefined && r > 0) {
-				qp["rating"] = r;
+			const rating = store.activeFilters?.rating;
+			if (rating?.length === 2) {
+				const [min, max] = rating;
+				if (min !== 0 || max !== 10) {
+					qp["ratingMin"] = min;
+					qp["ratingMax"] = max;
+				}
+			} else {
+				const min = rating?.[0];
+				if (min !== undefined && min > 0) {
+					qp["ratingMin"] = min;
+				}
 			}
 		}
 		_store.sortAndFiltersForQueryParams = qp;

@@ -4,6 +4,7 @@
 	import Icon from "../Icon.svelte";
 	import tooltip from "../actions/tooltip";
 	import Menu from "../Menu.svelte";
+  	import RangeSlider from 'svelte-range-slider-pips';
 
 	function filterClicked(type: keyof Filters, f: string) {
 		if (store.activeFilters[type]?.includes(f)) {
@@ -16,6 +17,15 @@
 		store.activeFilters = store.activeFilters;
 		window.scrollTo({ top: 0 });
 	}
+
+	// Local state for range slider
+    let raterange = $state([...(store.activeFilters.rating ?? [0, 10])]);
+
+    // Update local state when store changes
+    $effect(() => {
+        raterange = [...(store.activeFilters.rating ?? [0, 10])];
+    });
+
 </script>
 
 <Menu conf={{ width: "200px", right: "47px", arrowLeft: "38px" }}>
@@ -93,28 +103,37 @@
 	>
 		dropped
 	</button>
-	<h4 class="norm sm-caps">My List</h4>
-	<label>
-		<span class="norm sm-caps">Rating</span>
-		<input
-			type="range"
-			min="0"
-			max="10"
-			step="1"
-			value={store.activeFilters.rating?.[0] ?? 0}
-			onchange={(e) => {
-				store.activeFilters.rating = [parseFloat(e.target.value)];
-				store.activeFilters = store.activeFilters;
-			}}
+	<h4 class="norm sm-caps">my list</h4>
+	<h4 class="norm sm-caps">rating</h4>
+	<div class="slider-wrapper">
+
+		<RangeSlider 
+			id="ratingrange"
+			class="handle-triangle track-size float-style pips-bottom pips-style"
+			min={0}
+			step={1}
+			max={10}
+			values={raterange}
+			pips
+			all="label"
+			rest="pip"
+			range
+			float
+			rangeFloat
+			on:change={(e) => { 
+				raterange = [...e.detail.values];
+				store.activeFilters = { ...store.activeFilters, rating: [...e.detail.values] };
+			}
+			}
 		/>
-		<span>{store.activeFilters.rating?.[0] ?? 0}</span>
-	</label>
+	</div>
+
 </Menu>
 
 <style lang="scss">
 	h4:not(:first-child) {
 		margin-top: 8px;
-		margin-bottom: 8px;
+		margin-bottom: 5px;
 	}
 
 	.title {
@@ -174,4 +193,74 @@
 			border-radius: 10px;
 		}
 	}
+
+	.slider-wrapper {
+		width: 100%;
+		padding: 0px 6px 6px 0px;
+		box-sizing: border-box;
+	}
+
+	:global(.rangeSlider) {
+		display: block;
+		width: calc(100% - 22px);
+		max-width: calc(100% - 22px);
+		box-sizing: border-box;
+		margin: 0 auto;
+		padding: 0;
+		line-height: 1;
+		vertical-align: middle;
+		--range-slider: var(--bg-color);
+		--slider-accent: var(--text-color);
+		--slider-base: var(--text-color-accent);
+		--slider-bg: var(--bg-color);
+		--range-range: var(--text-color);
+		--range-handle: var(--text-color);
+		--range-handle-focus: var(--text-color);
+		--range-handle-border: var(--text-color);
+		--range-float: var(--text-color);
+		--range-float-text: 	font-size: 30px;
+		--range-float-text:		var(--bg-color);
+		--range-range-inactive: var(--bg-color-accent);
+		--range-range-hover: var(--text-color);
+		--range-range-press: var(--text-color);
+		--range-pip: var(--text-color-accent);
+		--range-pip-active: var(--text-color);
+		--range-pip-in-range: var(--text-color);
+		--range-pip-out-of-limit: var(--text-color-accent);
+		--range-pip-hover: var(--text-color);
+		--range-pip-text: var(--text-color);
+		--range-pip-active-text: var(--bg-color);
+		--range-pip-in-range-text: var(--bg-color);
+		--range-pip-hover-text: var(--bg-color);
+		  /* custom aesthetics */
+  --track-width: 0.6em;
+  --track-radius: 1;
+  --track-padding: 0.3em;
+  --range-width: 0.6em;
+  --range-radius: 1;
+  --range-padding: 0em;
+ 
+  --handle-offset: 0.1em;
+  --handle-offset-block: 0em;
+  --handle-rotate: 0deg;
+  --handle-size: 1.2em;
+ 
+  --float-offset: 5%;
+  --float-offset-inline: -0.1em;
+  --range-float-offset: 5%;
+  --range-float-offset-inline: 0em;
+  --float-size: 1.2em;
+  --float-padding: 0.4em;
+  --float-radius: 0.5;
+ 
+  --pips-offset: 25%;
+  --pips-height: 0.6em;
+  --pip-selected-offset: -5%;
+  --pip-selected-height: 0.7em;
+  --pip-inrange-offset: -10%;
+  --pip-inrange-height: 0.6em;
+  --pip-val-size: 0.9em;
+  --pip-val-offset: -0.3em;
+	}
+
 </style>
